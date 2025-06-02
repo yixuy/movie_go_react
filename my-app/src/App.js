@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useRef, useState} from 'react';
 import './App.css'
 import Input from './input.js'
 function App(props) {
@@ -8,8 +8,47 @@ function App(props) {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [dob, setDob] = useState("");
+    // refs
+
+    const firstNameRef = useRef();
+    const lastNameRef = useRef(null);
+    const dobRef = useRef(null);
 
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        console.log(firstName, lastName, dob);
+        if (lastName !== ""){
+            addPerson(firstName, lastName, dob)
+        }
+    }
+
+    const addPerson = (newFirstName, newLastName, newDOB) => {
+        let newPerson = {
+            id: crowd.length + 1,
+            firstName: newFirstName,
+            lastName: newLastName,
+            dob: newDOB
+        }
+        
+        const newList = crowd.concat(newPerson);
+        const sorted = newList.sort((a, b) => {
+            if (a.lastName < b.lastName){
+                return -1;
+            } else if (a.lastName > b.lastName){
+                return 1;
+            }
+            return 0;
+        })
+        setCrowd(sorted);
+        setFirstName("");
+        setLastName("");
+        setDob("");
+
+        firstNameRef.current.value = "";
+        lastNameRef.current.value = "";
+        dobRef.current.value = "";
+    }
     const toggleTrue = () => {
         if (isTrue) {
             setIsTrue(false);
@@ -62,7 +101,7 @@ function App(props) {
         {
             isTrue ? <p> Is true</p> : <p> Is false </p>
         }
-        <form autoComplete='off'>
+        <form autoComplete='off' onSubmit = {handleSubmit}>
             <div className='mb-3'>
                 <label className='form-label' htmlFor='first-name'> 
                     First Name
@@ -71,6 +110,7 @@ function App(props) {
                     type = "text" 
                     name = "first-name"
                     id = "first-name" 
+                    ref = {firstNameRef}
                     autoComplete='first-name-new'
                     className='form-control'
                     onChange={(event) => setFirstName(event.target.value)}
@@ -79,6 +119,7 @@ function App(props) {
             <Input 
                 title = "last Name" 
                 type = "text"
+                ref = {lastNameRef}
                 name = "last-name"
                 autoComplete = "last-name-new"
                 className = "form-control"
@@ -88,10 +129,14 @@ function App(props) {
                 title = "Date of Birth" 
                 type = "date"
                 name = "dob"
+                ref = {dobRef}
                 autoComplete = "dob-new"
                 className = "form-control"
                 onChange = {(event) => setDob(event.target.value)}
             ></Input>
+
+            <input type="submit" value="Submit" className='btn btn-primary'>
+            </input>
         </form>
 
         <hr/>
