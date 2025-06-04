@@ -6,23 +6,55 @@ const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const {setJwtToken} = useOutletContext();
-  const {setAlertMessage} = useOutletContext();
-  const {setAlertClass} = useOutletContext();
+  const { setJwtToken } = useOutletContext();
+  const { setAlertMessage } = useOutletContext();
+  const { setAlertClass } = useOutletContext();
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("email/pass", email, password);
-    if (email === "admin@example.com"){
-        setJwtToken("abc");
-        setAlertClass("d-none");
-        setAlertMessage("");
-        navigate("/");
-    }else{
+    // console.log("email/pass", email, password);
+
+    // if (email === "admin@example.com"){
+    //     setJwtToken("abc");
+    //     setAlertClass("d-none");
+    //     setAlertMessage("");
+    //     navigate("/");
+    // }else{
+    //     setAlertClass("alert-danger");
+    //     setAlertMessage("Invalid credential");
+    // }
+    let payload = {
+      email: email,
+      password: password,
+    };
+
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include", // if you use cookies/sessions
+      body: JSON.stringify(payload),
+    };
+
+    fetch("/authenticate", requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          setAlertClass("alert-danger");
+          setAlertMessage(data.Message);
+        } else {
+          setJwtToken(data.access_token);
+          setAlertClass("d-none");
+          setAlertMessage("");
+          navigate("/");
+        }
+      })
+      .catch((error) => {
         setAlertClass("alert-danger");
-        setAlertMessage("Invalid credential");
-    }
+        setAlertMessage(error);
+      });
   };
 
   return (
@@ -48,11 +80,7 @@ const Login = () => {
           onChange={(event) => setPassword(event.target.value)}
         />
 
-        <input
-             type = "submit"
-             className="btn btn-primary"
-             value = "Login"
-        />
+        <input type="submit" className="btn btn-primary" value="Login" />
       </form>
     </div>
   );
