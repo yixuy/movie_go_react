@@ -9,6 +9,8 @@ const Login = () => {
   const { setJwtToken } = useOutletContext();
   const { setAlertMessage } = useOutletContext();
   const { setAlertClass } = useOutletContext();
+  const { toggleRefresh } = useOutletContext();
+
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
@@ -48,6 +50,7 @@ const Login = () => {
           setJwtToken(data.access_token);
           setAlertClass("d-none");
           setAlertMessage("");
+          toggleRefresh(true);
           navigate("/");
         }
       })
