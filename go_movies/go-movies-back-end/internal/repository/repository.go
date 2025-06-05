@@ -13,4 +13,5 @@ type DatabaseRepo interface {
 
 	GetUserByEmail(email string) (*models.User, error)
 	GetUserByID(ID int) (*models.User, error)
+	AllGenres() ([]*models.Genre, error)
 }

@@ -105,22 +105,19 @@ function App() {
           <nav>
             <div className="list-group">
               <Link to="/" className="list-group-item list-group-item-action">
-                {" "}
-                Home{" "}
+                Home
               </Link>
               <Link
                 to="/movies"
                 className="list-group-item list-group-item-action"
               >
-                {" "}
-                Movies{" "}
+                Movies
               </Link>
               <Link
                 to="/genres"
                 className="list-group-item list-group-item-action"
               >
-                {" "}
-                Genres{" "}
+                Genres
               </Link>
               {jwtToken !== "" && (
                 <>
@@ -128,22 +125,19 @@ function App() {
                     to="/admin/movie/0"
                     className="list-group-item list-group-item-action"
                   >
-                    {" "}
-                    Add Movie{" "}
+                    Add Movie
                   </Link>
                   <Link
                     to="/manage-catalogue"
                     className="list-group-item list-group-item-action"
                   >
-                    {" "}
-                    Manage Catalogue{" "}
+                    Manage Catalogue
                   </Link>
                   <Link
                     to="/graphql"
                     className="list-group-item list-group-item-action"
                   >
-                    {" "}
-                    GraphQL{" "}
+                    GraphQL
                   </Link>
                 </>
               )}
