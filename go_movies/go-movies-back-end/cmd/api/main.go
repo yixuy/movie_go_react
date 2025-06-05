@@ -21,6 +21,7 @@ type application struct {
 	JWTIssuer    string
 	JWTAudience  string
 	CookieDomain string
+	MovieAPIKey  string
 }
 
 func main() {
@@ -33,6 +34,7 @@ func main() {
 	flag.StringVar(&app.JWTIssuer, "jwt-issuer", "example.com", "signing issuer")
 	flag.StringVar(&app.CookieDomain, "cookie-domain", "localhost", "cookie domain")
 	flag.StringVar(&app.Domain, "domain", "example.com", "domain")
+	flag.StringVar(&app.MovieAPIKey, "api-key", "e19bc84690253593cdde5bd918dc1abb", "api key")
 	flag.Parse()
 
 	conn, err := app.connectToDB()

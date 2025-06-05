@@ -241,7 +241,6 @@ func (m *PostgresDBRepo) GetUserByID(id int) (*models.User, error) {
 	return &user, nil
 }
 
-
 func (m *PostgresDBRepo) AllGenres() ([]*models.Genre, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), dbTimeOut)
 	defer cancel()
@@ -270,4 +269,52 @@ func (m *PostgresDBRepo) AllGenres() ([]*models.Genre, error) {
 		genres = append(genres, &g)
 	}
 	return genres, nil
+}
+
+func (m *PostgresDBRepo) InsertMovie(movie models.Movie) (int, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeOut)
+	defer cancel()
+
+	query := `insert into movies (title, description, release_date, runtime, mpaa_rating, created_at, updated_at, image) values ($1, $2, $3, $4, $5, $6, $7, $8) returning id`
+
+	var newID int
+
+	err := m.DB.QueryRowContext(ctx, query,
+		movie.Title,
+		movie.Description,
+		movie.ReleaseDate,
+		movie.RunTime,
+		movie.MPAARating,
+		movie.CreatedAt,
+		movie.UpdatedAt,
+		movie.Image,
+	).Scan(&newID)
+
+	if err != nil {
+		return 0, err
+	}
+
+	return newID, nil
+}
+
+func (m *PostgresDBRepo) UpdateMovieGenres(id int, genreIDs []int) error {
+	ctx, cancel := context.WithTimeout(context.Background(), dbTimeOut)
+	defer cancel()
+
+	query := `delete from movies_genres where movie_id = $1`
+	_, err := m.DB.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	for _, n := range genreIDs {
+		query := `insert into movies_genres(movie_id, genre_id) values ($1, $2)`
+		_, err := m.DB.ExecContext(ctx, query, id, n)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+
 }

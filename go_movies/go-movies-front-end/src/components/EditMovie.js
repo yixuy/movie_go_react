@@ -10,6 +10,7 @@ import Input from "./form/Input.js";
 import Select from "./form/Select";
 import TextArea from "./form/TextArea";
 import CheckBox from "./form/CheckBox.js";
+import Swal from "sweetalert2";
 const EditMovie = () => {
   const navigate = useNavigate();
   const { jwtToken } = useOutletContext();
@@ -96,6 +97,72 @@ const EditMovie = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    let errors = [];
+    let required = [
+      { field: movie.title, name: "title" },
+      { field: movie.release_date, name: "release_date" },
+      { field: movie.runtime, name: "runtime" },
+      { field: movie.description, name: "description" },
+      { field: movie.mpaa_rating, name: "mpaa_rating" },
+    ];
+
+    required.forEach(function (obj) {
+      if (obj.field === "") {
+        errors.push(obj.name);
+      }
+    });
+
+    if (movie.genres_array.length === 0) {
+      Swal.fire({
+        title: "Error!",
+        text: "You must choose at least one genre",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
+      errors.push("genres");
+    }
+    setErrors(errors);
+
+    if (errors.length > 0) {
+      return false;
+    }
+
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    headers.append("Authorization", "Bearer " + jwtToken);
+
+    let method = "PUT";
+
+    if (movie.id > 0) {
+      method = "PATCH";
+    }
+
+    const requestBody = movie;
+
+    requestBody.release_date = new Date(movie.release_date);
+    requestBody.runtime = parseInt(movie.runtime, 10);
+
+    console.log(requestBody);
+    let requestOptions = {
+      body: JSON.stringify(requestBody),
+      method: method,
+      headers: headers,
+      credential: "include",
+    };
+
+    fetch(`/admin/movies/${movie.id}`, requestOptions)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.error) {
+          console.log(data.error);
+        } else {
+          navigate("/manage-catalogue");
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
   const handleCheck = (event, index) => {
     let tempArr = movie.genres;
@@ -204,6 +271,9 @@ const EditMovie = () => {
             ))}
           </>
         )}
+
+        <hr />
+        <button className="btn btn-primary"> Save </button>
       </form>
     </div>
   );
