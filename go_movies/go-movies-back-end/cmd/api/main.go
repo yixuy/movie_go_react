@@ -43,14 +43,14 @@ func main() {
 	app.DB = &dbrepo.PostgresDBRepo{DB: conn}
 	defer app.DB.Connection().Close()
 	app.auth = Auth{
-		Issuer: app.JWTIssuer,
-		Audience: app.JWTAudience,
-		Secret: app.JWTSecret,
-		TokenExpiry: time.Minute * 15,
+		Issuer:        app.JWTIssuer,
+		Audience:      app.JWTAudience,
+		Secret:        app.JWTSecret,
+		TokenExpiry:   time.Minute * 15,
 		RefreshExpiry: time.Hour * 24,
-		CookiePath: "/",
-		CookieName: "refresh_token",
-		CookieDomain: app.CookieDomain,
+		CookiePath:    "/",
+		CookieName:    "refresh_token",
+		CookieDomain:  app.CookieDomain,
 	}
 
 	// connect to the database

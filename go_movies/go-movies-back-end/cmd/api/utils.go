@@ -18,19 +18,19 @@ func (app *application) writeJSON(w http.ResponseWriter, status int, data interf
 	if err != nil {
 		return err
 	}
-	if len(headers) > 0{
+	if len(headers) > 0 {
 		for key, value := range headers[0] {
 			w.Header()[key] = value
 		}
 	}
-	
+
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
 	_, err = w.Write(out)
 	if err != nil {
 		return err
 	}
-	return nil 
+	return nil
 }
 
 func (app *application) errorJSON(w http.ResponseWriter, err error, status ...int) error {
@@ -56,11 +56,11 @@ func (app *application) readJSON(w http.ResponseWriter, r *http.Request, data in
 	dec.DisallowUnknownFields()
 	err := dec.Decode(data)
 	if err != nil {
-		return err 
+		return err
 	}
 	err = dec.Decode(&struct{}{})
 	if err != io.EOF {
 		return errors.New("body must only contain a single JSON value")
 	}
-	return nil 
+	return nil
 }

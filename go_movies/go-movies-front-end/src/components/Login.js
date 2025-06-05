@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Input from "./form/input";
+import Input from "./form/Input";
 import { useNavigate, useOutletContext } from "react-router";
 
 const Login = () => {
